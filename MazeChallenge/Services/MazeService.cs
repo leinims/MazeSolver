@@ -1,15 +1,12 @@
-﻿using MazeSolver.Client;
-using MazeSolver.Entities;
+﻿using MazeSolver.Entities;
 using MazeSolver.Interfaces;
 using MazeSolver.PathFinder;
 using MazeSolver.View;
+using MazeSolver.Utilities;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MazeSolver.Services
 {
@@ -56,7 +53,7 @@ namespace MazeSolver.Services
             var gameResult = await _client.NewGame(maze.MazeUid);
             if (!gameResult.Success)
             {
-                _logger.LogError($"Error starting game");
+                _logger.LogError($"Error starting game: {gameResult.Message}");
                 return false;
             }
             gameUid = gameResult.Results;
@@ -67,21 +64,21 @@ namespace MazeSolver.Services
 
             if (!result.Success || result.Results == null)
             {
-                _logger.LogError($"Error getting game inf");
+                _logger.LogError($"Error getting game inf: {result.Message}");
                 return false;
             }
 
             game = new Game(gameUid, result.Results);
 
-            var pathFinder = new AStar(new Vector2Int(0, 0), new Vector2Int(24, 24));
+            var pathFinder = new GreedyAlgorithm(new Vector2Int(0, 0), new Vector2Int(24, 24));
 
             pathFinder.FindNextPosition(ref game);
 
-            var mazeViewer = new MazeViewer(new Vector2Int(maze.Width, maze.Height));
-            mazeViewer.Update(game);
+            var mazeViewer = new MazePrinter(new Vector2Int(maze.Width, maze.Height));
+            mazeViewer.UpdateScreen(game);
             while (game.Steps < MaxSteps)
             {
-                mazeViewer.Update(game);
+                mazeViewer.UpdateScreen(game);
                 result = await _client.Move(maze.MazeUid, game.GameUid, directions[game.Direction]).ConfigureAwait(false);
                 if (!result.Success || result.Results == null)
                 {

@@ -29,7 +29,7 @@ namespace MazeSolver
 
             IConfiguration configuration = iServices.BuildServiceProvider().GetRequiredService<IConfiguration>();
 
-            var config = configuration.GetSection("MazeConfig").Get<MazeConfig>();
+            var config = configuration.GetRequiredSection("MazeConfig").Get<MazeConfig>();
             iServices.AddHttpClient(config.APISettings.APIname, client => {
                                 client.BaseAddress = new Uri(config.APISettings.URI);
                             });

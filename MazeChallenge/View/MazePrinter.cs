@@ -1,4 +1,5 @@
 ﻿using MazeSolver.Entities;
+using MazeSolver.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,12 +8,12 @@ using System.Threading.Tasks;
 
 namespace MazeSolver.View
 {
-    
-    internal class MazeViewer
+
+    internal class MazePrinter
     {
         private string[,] mazeMatrix;
         private Vector2Int position;
-        public MazeViewer(Vector2Int size) {
+        public MazePrinter(Vector2Int size) {
             mazeMatrix = new string[size.X, size.Y];
 
             for (int i = 0; i < mazeMatrix.GetLength(0); i++)
@@ -23,7 +24,7 @@ namespace MazeSolver.View
                 }
             }
         }
-        public void Update(Game game)
+        public void UpdateScreen(Game game)
         {
             mazeMatrix[position.X, position.Y] = "x";
             position.X = game.CurrentBlock.PosX;

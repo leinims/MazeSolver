@@ -1,5 +1,6 @@
 ﻿using MazeSolver.Entities;
 using MazeSolver.Interfaces;
+using MazeSolver.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,14 +11,14 @@ using System.Threading.Tasks;
 
 namespace MazeSolver.PathFinder
 {
-    public class AStar : IPathFinder
+    public class GreedyAlgorithm : IPathFinder
     {
         private List<Node> nodes;
         private Vector2Int beginPos;
         private Vector2Int endPos;
         private Node currentNode;
 
-        public AStar(Vector2Int beginPos, Vector2Int endPos)
+        public GreedyAlgorithm(Vector2Int beginPos, Vector2Int endPos)
         {
             this.beginPos = beginPos;
             this.endPos = endPos;
@@ -42,10 +43,10 @@ namespace MazeSolver.PathFinder
                     {
                         //Avoid parent Path
                         if (Math.Abs(game.Direction - i) == 2 && currentNode.Parent != null) continue;
-                        Vector2Int position = new Vector2Int();
-                        //North: 0-1, South 2-1, East: 2-1, West: 2-3
-                        position.X = currentNode.Position.X + (game.CurrentBlock.Neighbours[i] && i % 2 == 1 ? 2 - i : 0);
-                        position.Y = currentNode.Position.Y + (game.CurrentBlock.Neighbours[i] && i % 2 == 0 ? i - 1 : 0);
+
+                        Vector2Int position = currentNode.Position + DirectionToXY(i);
+                            //currentNode.Position.X + (game.CurrentBlock.Neighbours[i] && i % 2 == 1 ? 2 - i : 0);
+                        //position.Y = currentNode.Position.Y + (game.CurrentBlock.Neighbours[i] && i % 2 == 0 ? i - 1 : 0);
 
                         if (isThereNode(position)) continue;
 
@@ -71,24 +72,23 @@ namespace MazeSolver.PathFinder
 
                  currentNode.Parent.numOfClosedNeigh++;
                 //return to parent position
-                game.Direction = goNextNode(currentNode, currentNode.Parent);
+                game.Direction = XYToDirection(goNextNode(currentNode, currentNode.Parent));
                 currentNode = currentNode.Parent;
                 return true;
             }
 
-            //Search lower Cost node //use for Reverse
+            //Searches lower Cost node
             Node choosedNode = nodes[0];
             foreach (var node in nodes)
             {
                 if (node.HScore < choosedNode.HScore && !node.IsClose 
-                    && node != currentNode && currentNode == node.Parent) //&& node != currentNode.Parent)
+                    && node != currentNode && currentNode == node.Parent)
                     choosedNode = node;
             }
-            //Check last commo node between current an lower cost node
+            //Checkes last common node between current an lower cost node
             if(currentNode == choosedNode.Parent)
             {
-
-                game.Direction = goNextNode(currentNode, choosedNode);
+                game.Direction = XYToDirection(goNextNode(currentNode, choosedNode));
                 currentNode = choosedNode;
                 return true;
             }
@@ -100,13 +100,13 @@ namespace MazeSolver.PathFinder
                     if (choosedNode.Path[i] == currentNode)
                         break;
                 }
-                game.Direction = goNextNode(currentNode, choosedNode.Path[i+1]);
+                game.Direction = XYToDirection(goNextNode(currentNode, choosedNode.Path[i+1]));
                 currentNode = choosedNode.Path[i + 1];
                 return true;
             }
             else
             {
-                game.Direction = goNextNode(currentNode, currentNode.Parent);
+                game.Direction = XYToDirection(goNextNode(currentNode, currentNode.Parent));
                 currentNode = currentNode.Parent;
                 return true;
             }
@@ -118,13 +118,8 @@ namespace MazeSolver.PathFinder
         {
             return Math.Abs(endPos.X - position.X) + Math.Abs(endPos.Y - position.Y);
         }
-        private int goNextNode(Node fromNode, Node toNode)
-        {
-            int dX = fromNode.Position.X- toNode.Position.X;
-            int dY = toNode.Position.Y - fromNode.Position.Y;
-            int newDirection = Math.Abs(dX * (dX + 2) + dY * (dY + 1));
-            return newDirection;
-        }
+        
+        //Checking if there is a node a specific position in Nodes List
         private bool isThereNode(Vector2Int position)
         {
             foreach (var node in nodes)
@@ -133,5 +128,29 @@ namespace MazeSolver.PathFinder
             }
             return false;
         }
+        //Converts XY movement to direction(0,1,2,3)
+        private static int XYToDirection(Vector2Int position)
+        {
+            return Math.Abs(position.X * (position.X + 2) + position.Y * (position.Y + 1));
+        }
+
+        //Converts direction(0,1,2,3) to XY movement
+        private static Vector2Int DirectionToXY(int direction)
+        {
+            Vector2Int position = new Vector2Int();
+
+            position.X = direction % 2 == 1 ? 2 - direction : 0;
+            position.Y = direction % 2 == 0 ? direction - 1 : 0;
+            return position;
+        }
+        //Returns XY movement
+        private static Vector2Int goNextNode(Node fromNode, Node toNode)
+        {
+            int dX = fromNode.Position.X - toNode.Position.X;
+            int dY = toNode.Position.Y - fromNode.Position.Y;
+            return new Vector2Int(dX, dY);
+        }
+
+
     }
 }
