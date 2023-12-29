@@ -18,16 +18,15 @@ namespace MazeSolver.Services
         private Maze? maze;
         private readonly IMazeClient _client;
         private readonly ILogger<MazeService> _logger;
-        private IPathFinder _pathFinder;
         private readonly MazeConfig _config;
         private const int MaxSteps = 1000;
 
-        public MazeService(IOptions<MazeConfig> options,  ILogger<MazeService> logger, IMazeClient client, IPathFinder pathFinder)
+        public MazeService(IOptions<MazeConfig> options,  ILogger<MazeService> logger, IMazeClient client)
         {
             _logger = logger;
             _client = client;
             _config = options.Value;
-            _pathFinder = pathFinder;
+            
         }
         public async Task<bool> CreateMaze()
         {
@@ -74,8 +73,9 @@ namespace MazeSolver.Services
 
             game = new Game(gameUid, result.Results);
 
+            var pathFinder = new AStar(new Vector2Int(0, 0), new Vector2Int(24, 24));
 
-            _pathFinder.FindNextPosition(ref game);
+            pathFinder.FindNextPosition(ref game);
 
             var mazeViewer = new MazeViewer(new Vector2Int(maze.Width, maze.Height));
             mazeViewer.Update(game);
@@ -99,7 +99,7 @@ namespace MazeSolver.Services
                     return true;
                 }
                 game.CurrentBlock = result.Results;
-                _pathFinder.FindNextPosition(ref game);
+                pathFinder.FindNextPosition(ref game);
 
                 
                 game.Steps++;

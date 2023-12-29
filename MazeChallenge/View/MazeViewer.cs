@@ -34,7 +34,7 @@ namespace MazeSolver.View
             {
                 for (int j = 0; j < mazeMatrix.GetLength(1); j++)
                 {
-                    Console.Write(mazeMatrix[i, j] +  " ");
+                    Console.Write(mazeMatrix[j, i] +  " ");
                 }
                 Console.WriteLine();
             }

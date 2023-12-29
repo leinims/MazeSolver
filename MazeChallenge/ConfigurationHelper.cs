@@ -21,7 +21,7 @@ namespace MazeSolver
             
             iServices.AddSingleton<IMazeClient, MazeClient>()
                     .AddSingleton<IMazeService, MazeService>()
-                    .AddSingleton<IPathFinder, RightHand>()
+                    //.AddSingleton<IPathFinder, AStar>()
                     .AddOptions<MazeConfig>()
                     .Configure<IConfiguration>((mazeConfig, configuration) => {
                         configuration.Bind("MazeConfig", mazeConfig);
