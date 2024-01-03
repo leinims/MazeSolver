@@ -1,5 +1,6 @@
 ﻿using MazeSolver.Entities;
 using MazeSolver.Interfaces;
+using MazeSolver.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,11 @@ namespace MazeSolver.PathFinder
 {
     public class RightHand : IPathFinder
     {
+
+        public RightHand(Vector2Int beginPos, Vector2Int endPos)
+        {
+            
+        }
         public bool FindNextPosition(ref Game game)
         {
             game.Direction += 1;

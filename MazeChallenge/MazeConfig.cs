@@ -14,7 +14,8 @@ namespace MazeSolver
     {
         public string APIname { get; set; }
         public string URI { get; set; }
-        
+        public string NewMazeMethod { get; set; }
+        public string NewGameMethod { get; set; }
         public string AccessCode { get; set; }
 
     }

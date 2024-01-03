@@ -25,6 +25,7 @@ namespace MazeSolver.Services
             _config = options.Value;
             
         }
+        //Creates a new Maze on Service and as Entity
         public async Task<bool> CreateMaze()
         {
             _logger.LogInformation("Creating a new maze...");
@@ -40,6 +41,8 @@ namespace MazeSolver.Services
 
             return true;
         }
+        //Creates a new Game on Service and as Entity
+        //Find a path to Maze's exit
         public async Task<bool> SolveMaze()
         {
 

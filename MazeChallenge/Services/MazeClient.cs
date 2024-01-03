@@ -35,7 +35,7 @@ namespace MazeSolver.Client
             {
                 var mazeRequest = new MazeRequest(width, height);
                 var client = _httpClientFactory.CreateClient(_config.APISettings.APIname);
-                var response = await client.PostAsJsonAsync($"Maze?code={_config.APISettings.AccessCode}", mazeRequest);
+                var response = await client.PostAsJsonAsync($"{_config.APISettings.NewMazeMethod}?code={_config.APISettings.AccessCode}", mazeRequest);
                 responseString = await response.Content.ReadAsStringAsync();
 
                 if (response.IsSuccessStatusCode)
@@ -72,7 +72,7 @@ namespace MazeSolver.Client
             {
                 var gameRequest = new GameRequest(PlayerOperation.Start.ToString());
                 var client = _httpClientFactory.CreateClient(_config.APISettings.APIname);
-                var response = await client.PostAsJsonAsync($"Game/{mazeUid}?code={_config.APISettings.AccessCode}", gameRequest);
+                var response = await client.PostAsJsonAsync($"{_config.APISettings.NewGameMethod}/{mazeUid}?code={_config.APISettings.AccessCode}", gameRequest);
                 responseString = await response.Content.ReadAsStringAsync();
 
                 if (response.IsSuccessStatusCode)
@@ -108,7 +108,7 @@ namespace MazeSolver.Client
             {
                 var gameRequest = new GameRequest(operation.ToString());
                 var client = _httpClientFactory.CreateClient(_config.APISettings.APIname);
-                var response = await client.PostAsJsonAsync($"Game/{mazeUid}/{gameUid}?code={_config.APISettings.AccessCode}", gameRequest);
+                var response = await client.PostAsJsonAsync($"{_config.APISettings.NewGameMethod}/{mazeUid}/{gameUid}?code={_config.APISettings.AccessCode}", gameRequest);
                 responseString = await response.Content.ReadAsStringAsync();
                 
                 if (response.IsSuccessStatusCode)
@@ -154,7 +154,7 @@ namespace MazeSolver.Client
             try
             {
                 var client = _httpClientFactory.CreateClient(_config.APISettings.APIname);
-                var response = await client.GetAsync($"Game/{mazeUid}/{gameUid}?code={_config.APISettings.AccessCode}");
+                var response = await client.GetAsync($"{_config.APISettings.NewGameMethod}/{mazeUid}/{gameUid}?code={_config.APISettings.AccessCode}");
                 responseString = await response.Content.ReadAsStringAsync();
                 
 

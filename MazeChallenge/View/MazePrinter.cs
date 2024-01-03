@@ -24,6 +24,7 @@ namespace MazeSolver.View
                 }
             }
         }
+        //Updates screen with new changes on Maze
         public void UpdateScreen(Game game)
         {
             mazeMatrix[position.X, position.Y] = "x";
